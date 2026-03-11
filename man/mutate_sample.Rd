@@ -9,7 +9,7 @@ mutate_sample(x, sample_flag, ...)
 \arguments{
 \item{x}{Dataset yang digunakan.}
 
-\item{sample_flag}{Flag dari sampel imputasi yang ingin diubah atribut-atributnya}
+\item{sample_flag}{Flag dari sampel imputasi yang ingin diubah atribut-atributnya.}
 
 \item{...}{Daftar mapping atribut dan nilai baru yang diinginkan (dapat dibuat sebanyak mungkin).}
 }
@@ -20,5 +20,5 @@ Data yang telah diubah nilai atribut-atributnya.
 Mengubah nilai atribut-atribut sampel dengan flag tertentu
 }
 \examples{
-sakernas_dummy = mutate_sample(x = sakernas_dummy, flag = "aceh_desa", status6 = NA, kategori = 1)
+survei_dummy = mutate_sample(x = survei_dummy, sample_flag = "aceh_desa", status6 = NA, kategori = 1)
 }

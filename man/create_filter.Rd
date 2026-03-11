@@ -16,5 +16,6 @@ Filter yang dapat digunakan untuk memfilter data dalam fungsi \code{\link{imputa
 Membuat filter yang diinginkan
 }
 \examples{
-filter_list = create_filter(NAMA_PROV == "ACEH", KLASIFIKASI == "1", JenisKegiatan != 2)
+filter1 = create_filter(NAMA_PROV == "ACEH", KLASIFIKASI == "1", JenisKegiatan != 2)
+filter2 = create_filter(NAMA_PROV == "ACEH" | NAMA_PROV == "RIAU", KLASIFIKASI == "2", JenisKegiatan \%in\% c(1,2,3))
 }
