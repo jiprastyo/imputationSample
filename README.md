@@ -78,8 +78,10 @@ survei_dummy <- imputation_sample(
   iter = 10,
   sample_flag = "all_selected"
 )
-#> WARNING: [NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 1] tidak mencukupi target.
-#>   Weight tersedia 485.230 / target 999.999 / kekurangan 514.769. Semua data terfilter dipilih.
+#> ⚠ WARNING!
+#> [NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 1] tidak mencukupi target.
+#> Weight tersedia 485.230 / target 999.999 / kekurangan 514.769.
+#> Semua data terfilter dipilih.
 #> Total data 3.727 / terfilter 485 / terpilih imputasi 485 dengan 0 iterasi
 #>   (seluruh data terfilter), total weight: 485.230 (48.5233%)
 #> Baris terpilih ditandai flag=all_selected.
