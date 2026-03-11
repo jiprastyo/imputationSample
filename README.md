@@ -52,7 +52,7 @@ survei_dummy <- imputation_sample(
   sample_flag = "aceh_sumbar_1"
 )
 #> Total data 3.727 / terfilter 485 / terpilih imputasi 42 dengan 10 iterasi, total weight: 44.987 (99.9711%)
-#> Sampel terpilih telah ditandai dengan flag: aceh_sumbar_1. Silakan periksa kolom flag
+#> Baris terpilih ditandai flag=aceh_sumbar_1.
 
 # Mengubah atribut sampel terpilih
 survei_dummy <- mutate_sample(
@@ -82,6 +82,7 @@ survei_dummy <- imputation_sample(
 #>   Weight tersedia 485.230 / target 999.999 / kekurangan 514.769. Semua data terfilter dipilih.
 #> Total data 3.727 / terfilter 485 / terpilih imputasi 485 dengan 0 iterasi
 #>   (seluruh data terfilter), total weight: 485.230 (48.5233%)
+#> Baris terpilih ditandai flag=all_selected.
 ```
 
 ## Changelog
