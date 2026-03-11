@@ -21,6 +21,7 @@
 #' @export
 imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1) {
   weight_col <- dplyr::enquo(weight_col)
+  fnum <- function(x) formatC(x, format = "f", digits = 0, big.mark = ".")
 
   if (!"temp_id" %in% colnames(x)) {
     x$temp_id <- 1:nrow(x)
@@ -40,7 +41,7 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   if (n_filtered == 0) {
     warning("Tidak ada data yang sesuai dengan filter. Data dikembalikan tanpa perubahan.")
     x$temp_id <- NULL
-    message(paste0("Total data ", n_all, " / terfilter 0 / terpilih imputasi 0 dengan ", iter,
+    message(paste0("Total data ", fnum(n_all), " / terfilter 0 / terpilih imputasi 0 dengan ", iter,
                    " iterasi, total weight: 0 (0%)"))
     message(paste("Sampel terpilih telah ditandai dengan flag: ", sample_flag, ". Silakan periksa kolom flag", sep = ""))
     return(x)
@@ -53,11 +54,11 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   # --- Adjustment 2: Handle weight_aggregate < min single weight ---
   # Changed from stop() to warning, select 0 rows
   if (weight_aggregate < min_weight) {
-    warning(paste0("Total weight yang dimasukkan (", weight_aggregate,
-                   ") lebih kecil dari weight terkecil (", min_weight,
+    warning(paste0("Total weight yang dimasukkan (", fnum(weight_aggregate),
+                   ") lebih kecil dari weight terkecil (", fnum(min_weight),
                    "). Tidak ada sampel yang dapat dipilih."))
     x$temp_id <- NULL
-    message(paste0("Total data ", n_all, " / terfilter ", n_filtered,
+    message(paste0("Total data ", fnum(n_all), " / terfilter ", fnum(n_filtered),
                    " / terpilih imputasi 0 dengan ", iter,
                    " iterasi, total weight: 0 (0%)"))
     message(paste("Sampel terpilih telah ditandai dengan flag: ", sample_flag, ". Silakan periksa kolom flag", sep = ""))
@@ -66,16 +67,18 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
 
   # --- Adjustment 3: If total available weight <= target, select all filtered rows directly ---
   if (total_weight_available <= weight_aggregate) {
-    warning(paste0("Total weight tersedia (", total_weight_available,
-                   ") tidak mencukupi target (", weight_aggregate,
-                   "). Kekurangan: ", weight_aggregate - total_weight_available,
-                   ". Seluruh data terfilter dipilih sebagai sampel."))
+    filter_text <- paste(sapply(filters, function(f) deparse(rlang::quo_get_expr(f))), collapse = ", ")
+    message(paste0("\nWARNING: [", filter_text, "] tidak mencukupi target. ",
+                   "Weight tersedia ", fnum(total_weight_available),
+                   " / target ", fnum(weight_aggregate),
+                   " / kekurangan ", fnum(weight_aggregate - total_weight_available),
+                   ". Semua data terfilter dipilih."))
     x[x$temp_id %in% x_filtered$temp_id, "flag"] <- sample_flag
     x$temp_id <- NULL
     pct <- round(total_weight_available / weight_aggregate * 100, 4)
-    message(paste0("Total data ", n_all, " / terfilter ", n_filtered,
-                   " / terpilih imputasi ", n_filtered, " dengan 0 iterasi (seluruh data terfilter), total weight: ",
-                   total_weight_available, " (", pct, "%)"))
+    message(paste0("Total data ", fnum(n_all), " / terfilter ", fnum(n_filtered),
+                   " / terpilih imputasi ", fnum(n_filtered), " dengan 0 iterasi (seluruh data terfilter), total weight: ",
+                   fnum(total_weight_available), " (", pct, "%)"))
     message(paste("Sampel terpilih telah ditandai dengan flag: ", sample_flag, ". Silakan periksa kolom flag", sep = ""))
     return(x)
   }
@@ -123,9 +126,9 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   w_selected <- candidates[[candidates_final]]$sum
   pct <- round(w_selected / weight_aggregate * 100, 4)
 
-  message(paste0("Total data ", n_all, " / terfilter ", n_filtered,
-                 " / terpilih imputasi ", n_selected, " dengan ", iter,
-                 " iterasi, total weight: ", w_selected, " (", pct, "%)"))
+  message(paste0("Total data ", fnum(n_all), " / terfilter ", fnum(n_filtered),
+                 " / terpilih imputasi ", fnum(n_selected), " dengan ", iter,
+                 " iterasi, total weight: ", fnum(w_selected), " (", pct, "%)"))
   message(paste("Sampel terpilih telah ditandai dengan flag: ", sample_flag, ". Silakan periksa kolom flag", sep = ""))
   return(x)
 }

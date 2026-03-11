@@ -10,6 +10,6 @@ Description: Package untuk memilih sampel imputasi berdasarkan filter dan target
 Depends: R (>= 3.1.2), dplyr, haven (>= 1.1.2)
 License: MIT
 Encoding: UTF-8
-Imports: magrittr
+Imports: magrittr, rlang
 LazyData: true
 RoxygenNote: 7.3.2

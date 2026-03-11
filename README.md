@@ -51,7 +51,7 @@ survei_dummy <- imputation_sample(
   iter = 10,
   sample_flag = "aceh_sumbar_1"
 )
-#> Total data 3727 / terfilter 485 / terpilih imputasi 42 dengan 10 iterasi, total weight: 44987 (99.9711%)
+#> Total data 3.727 / terfilter 485 / terpilih imputasi 42 dengan 10 iterasi, total weight: 44.987 (99.9711%)
 #> Sampel terpilih telah ditandai dengan flag: aceh_sumbar_1. Silakan periksa kolom flag
 
 # Mengubah atribut sampel terpilih
@@ -78,10 +78,10 @@ survei_dummy <- imputation_sample(
   iter = 10,
   sample_flag = "all_selected"
 )
-#> Warning: Total weight tersedia (485230) tidak mencukupi target (999999).
-#>   Kekurangan: 514769. Seluruh data terfilter dipilih sebagai sampel.
-#> Total data 3727 / terfilter 485 / terpilih imputasi 485 dengan 0 iterasi
-#>   (seluruh data terfilter), total weight: 485230 (48.5233%)
+#> WARNING: [NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 1] tidak mencukupi target.
+#>   Weight tersedia 485.230 / target 999.999 / kekurangan 514.769. Semua data terfilter dipilih.
+#> Total data 3.727 / terfilter 485 / terpilih imputasi 485 dengan 0 iterasi
+#>   (seluruh data terfilter), total weight: 485.230 (48.5233%)
 ```
 
 ## Changelog
@@ -100,6 +100,7 @@ survei_dummy <- imputation_sample(
 
 ## Credits
 - [@im-perativa](https://github.com/im-perativa) — penulis dan pengelola asli
+- [@jiprastyo](https://github.com/jiprastyo) — penanganan edge-case, optimasi kode, pembaruan dokumentasi (v0.2.0)
 
 ## Bantuan
 Apabila ditemukan bug atau masalah lainnya, silakan buat issue di [GitHub](https://github.com/easbi/imputationSample/issues)
