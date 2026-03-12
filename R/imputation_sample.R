@@ -42,7 +42,7 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
 
   # --- Adjustment 1: Handle empty filter result ---
   if (n_filtered == 0) {
-    message(paste0("\n\033[31m\u26A0 WARNING!\033[0m\n",
+    message(paste0("\n\x1b[31m\u26A0 WARNING!\x1b[0m\n",
                    "Tidak ada data yang sesuai dengan filter. Data dikembalikan tanpa perubahan."))
     x$temp_id <- NULL
     message(paste0("Total data ", fnum(n_all), " / terfilter 0 / terpilih imputasi 0 dengan ", iter,
@@ -58,7 +58,7 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   # --- Adjustment 2: Handle weight_aggregate < min single weight ---
   # Changed from stop() to warning, select 0 rows
   if (weight_aggregate < min_weight) {
-    message(paste0("\n\033[31m\u26A0 WARNING!\033[0m\n",
+    message(paste0("\n\x1b[31m\u26A0 WARNING!\x1b[0m\n",
                    "Total weight yang dimasukkan (", fnum(weight_aggregate),
                    ") lebih kecil dari weight terkecil (", fnum(min_weight),
                    "). Tidak ada sampel yang dapat dipilih."))
@@ -73,7 +73,7 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   # --- Adjustment 3: If total available weight <= target, select all filtered rows directly ---
   if (total_weight_available <= weight_aggregate) {
     filter_text <- paste(sapply(filters, function(f) deparse(rlang::quo_get_expr(f))), collapse = ", ")
-    message(paste0("\n\033[31m\u26A0 WARNING!\033[0m\n",
+    message(paste0("\n\x1b[31m\u26A0 WARNING!\x1b[0m\n",
                    "[", filter_text, "] tidak mencukupi target.\n",
                    "Weight tersedia ", fnum(total_weight_available),
                    " / target ", fnum(weight_aggregate),
