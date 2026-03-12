@@ -21,7 +21,10 @@
 #' @export
 imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1) {
   weight_col <- dplyr::enquo(weight_col)
-  fnum <- function(x) formatC(x, format = "f", digits = 0, big.mark = ".", decimal.mark = ",")
+  fnum <- function(x) {
+    s <- as.character(as.integer(x))
+    gsub("(?<=\\d)(?=(\\d{3})+$)", ".", s, perl = TRUE)
+  }
 
   if (!"temp_id" %in% colnames(x)) {
     x$temp_id <- 1:nrow(x)
