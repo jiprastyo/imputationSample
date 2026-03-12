@@ -16,9 +16,23 @@ devtools::install_github("easbi/imputationSample")
 
 ## Penggunaan
 Terdapat tiga fungsi utama dalam package ini:
-- `create_filter()` digunakan untuk membuat filter yang diinginkan
-- `imputation_sample()` digunakan untuk memilih sampel imputasi dari filter yang telah dibuat dengan total weight tertentu
-- `mutate_sample()` digunakan untuk mengubah nilai atribut-atribut tertentu dari sampel yang telah dipilih yang teridentifikasi dengan flag tertentu
+- `buatfilter()` digunakan untuk membuat filter yang diinginkan
+- `penanda()` digunakan untuk memilih sampel imputasi dari filter yang telah dibuat dengan total weight tertentu
+- `imputasi()` digunakan untuk mengubah nilai atribut-atribut tertentu dari sampel yang telah dipilih yang teridentifikasi dengan flag tertentu
+
+Catatan kompatibilitas: nama lama `create_filter()`, `imputation_sample()`, dan `mutate_sample()` tetap tersedia sebagai alias.
+
+## Fungsi
+Fungsi yang tersedia di repo ini:
+- `buatfilter(...)` membuat filter untuk digunakan pada `penanda()`.
+  Argumen `...` diisi dengan kondisi logika (satu atau lebih) yang akan di-AND-kan.
+- `penanda(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1)` memilih sampel dan memberi flag.
+- `imputasi(x, sample_flag, ...)` mengubah atribut pada baris dengan flag tertentu.
+  Argumen `...` diisi pasangan `kolom = nilai_baru` (bisa lebih dari satu).
+
+Fungsi internal (di dalam `penanda()`):
+- `fnum(x)` format angka untuk pesan output.
+- `run_once(x, weight_aggregate, iter, sample_flag, exclude_flag)` satu tahap pemilihan sampel.
 
 ## Implementasi
 
@@ -37,13 +51,13 @@ survei_dummy
 
 # Buat filter untuk memilih sampel acak dari provinsi ACEH atau SUMATERA BARAT
 # dengan klasifikasi Perkotaan
-my_filter <- create_filter(
+my_filter <- buatfilter(
   NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT",
   KLASIFIKASI == 1
 )
 
 # Memilih sampel acak dari filter yang telah dibuat
-survei_dummy <- imputation_sample(
+survei_dummy <- penanda(
   x = survei_dummy,
   filters = my_filter,
   weight_aggregate = 45000,
@@ -55,7 +69,7 @@ survei_dummy <- imputation_sample(
 #> Baris terpilih ditandai flag=aceh_sumbar_1.
 
 # Mengubah atribut sampel terpilih
-survei_dummy <- mutate_sample(
+survei_dummy <- imputasi(
   x = survei_dummy,
   sample_flag = "aceh_sumbar_1",
   kategori = 1,
@@ -65,12 +79,60 @@ survei_dummy <- mutate_sample(
 #> Nilai atribut jenisKegiatan dari sampel terpilih dengan flag: aceh_sumbar_1 telah diubah menjadi: 2
 ```
 
+### Tips Pemendekan Argumen
+
+Penamaan variabel bebas, tapi pastikan tidak memakai nama yang sama untuk objek berbeda.
+Berikut alias final yang disepakati:
+- `d` untuk data
+- `f` untuk filters
+- `wsum` untuk weight_aggregate
+- `wvar` untuk weight_col
+- `i` untuk iter
+- `flag` untuk sample_flag
+
+Contoh pemakaian:
+
+```r
+d <- survei_dummy
+f <- buatfilter(level_1_co == 12, level_2_co == 11, k10 >= 15)
+wsum <- c(5000, 6000)
+wvar <- w_finalR5
+i <- 10
+flag <- c("status4_1", "status4_2")
+
+d <- penanda(
+  x = d,
+  filters = f,
+  weight_aggregate = wsum,
+  weight_col = wvar,
+  iter = i,
+  sample_flag = flag
+)
+```
+
+### Multi-flag dalam Filter yang Sama (Prioritas)
+
+Skenario: kita ingin dua tahap pemilihan dari filter yang sama. Tahap pertama adalah prioritas utama,
+tahap kedua mengambil sisa data yang belum terpilih (flag = 0 atau NA) dan memberi flag berbeda.
+Jika `weight_aggregate` atau `iter` hanya satu nilai, nilai tersebut akan digunakan untuk semua tahap.
+
+```r
+survei_dummy <- penanda(
+  x = survei_dummy,
+  filters = my_filter,
+  weight_aggregate = c(30000, 15000),
+  weight_col = Weight_R,
+  iter = 10,
+  sample_flag = c("prioritas_1", "prioritas_2")
+)
+```
+
 ### Penanganan Weight Tidak Mencukupi
 
 Apabila total weight yang tersedia dalam data terfilter tidak mencukupi target `weight_aggregate`, fungsi akan otomatis memilih seluruh data terfilter dan memberikan peringatan:
 
 ```r
-survei_dummy <- imputation_sample(
+survei_dummy <- penanda(
   x = survei_dummy,
   filters = my_filter,
   weight_aggregate = 999999,
@@ -88,6 +150,15 @@ survei_dummy <- imputation_sample(
 ```
 
 ## Changelog
+
+### v0.2.5
+- Dukungan multi-flag dalam filter yang sama (pemilihan bertahap berdasarkan prioritas)
+- `weight_aggregate` dan `iter` menerima vektor (atau satu nilai yang direplikasi) untuk tiap tahap
+- Pembaruan dokumentasi dan contoh penggunaan
+- Penambahan alias fungsi baru: `buatfilter()`, `penanda()`, `imputasi()` (nama lama tetap tersedia)
+
+### v0.2.4
+- Penyesuaian minor dokumentasi
 
 ### v0.2.3
 - Perbaikan kompatibilitas R 4.5: menggunakan `cli::col_red()` untuk warna merah, menghindari mixed escape types dalam string literal
