@@ -89,6 +89,10 @@ survei_dummy <- imputation_sample(
 
 ## Changelog
 
+### v0.2.3
+- Perbaikan kompatibilitas R 4.5: menggunakan `cli::col_red()` untuk warna merah, menghindari mixed escape types dalam string literal
+- Setiap baris pesan warning menggunakan `message()` terpisah
+
 ### v0.2.2
 - Perbaikan kompatibilitas R 4.5: mengganti `\033` (octal) dengan `\x1b` (hex) pada ANSI escape codes
 

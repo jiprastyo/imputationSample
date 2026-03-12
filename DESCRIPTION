@@ -1,6 +1,6 @@
 Package: imputationSample
 Title: Package untuk Memilih Sampel Imputasi
-Version: 0.2.2.0000
+Version: 0.2.3.0000
 Authors@R: c(
     person("im-perativa", email = "im.imperativa@gmail.com", role = c("aut", "cre")),
     person("jiprastyo", role = "ctb", comment = "Edge-case handling, code optimization, documentation updates"))
@@ -10,6 +10,6 @@ Description: Package untuk memilih sampel imputasi berdasarkan filter dan target
 Depends: R (>= 3.1.2), dplyr, haven (>= 1.1.2)
 License: MIT
 Encoding: UTF-8
-Imports: magrittr, rlang
+Imports: magrittr, rlang, cli
 LazyData: true
 RoxygenNote: 7.3.2

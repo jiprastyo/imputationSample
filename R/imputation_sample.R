@@ -25,6 +25,7 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
     s <- as.character(as.integer(x))
     gsub("(?<=\\d)(?=(\\d{3})+$)", ".", s, perl = TRUE)
   }
+  warn_banner <- paste0(cli::col_red("\u26A0 WARNING!"))
 
   if (!"temp_id" %in% colnames(x)) {
     x$temp_id <- 1:nrow(x)
@@ -42,8 +43,9 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
 
   # --- Adjustment 1: Handle empty filter result ---
   if (n_filtered == 0) {
-    message(paste0("\n\x1b[31m\u26A0 WARNING!\x1b[0m\n",
-                   "Tidak ada data yang sesuai dengan filter. Data dikembalikan tanpa perubahan."))
+    message("")
+    message(warn_banner)
+    message("Tidak ada data yang sesuai dengan filter. Data dikembalikan tanpa perubahan.")
     x$temp_id <- NULL
     message(paste0("Total data ", fnum(n_all), " / terfilter 0 / terpilih imputasi 0 dengan ", iter,
                    " iterasi, total weight: 0 (0%)"))
@@ -56,10 +58,10 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   min_weight <- min(weight_values)
 
   # --- Adjustment 2: Handle weight_aggregate < min single weight ---
-  # Changed from stop() to warning, select 0 rows
   if (weight_aggregate < min_weight) {
-    message(paste0("\n\x1b[31m\u26A0 WARNING!\x1b[0m\n",
-                   "Total weight yang dimasukkan (", fnum(weight_aggregate),
+    message("")
+    message(warn_banner)
+    message(paste0("Total weight yang dimasukkan (", fnum(weight_aggregate),
                    ") lebih kecil dari weight terkecil (", fnum(min_weight),
                    "). Tidak ada sampel yang dapat dipilih."))
     x$temp_id <- NULL
@@ -73,12 +75,13 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
   # --- Adjustment 3: If total available weight <= target, select all filtered rows directly ---
   if (total_weight_available <= weight_aggregate) {
     filter_text <- paste(sapply(filters, function(f) deparse(rlang::quo_get_expr(f))), collapse = ", ")
-    message(paste0("\n\x1b[31m\u26A0 WARNING!\x1b[0m\n",
-                   "[", filter_text, "] tidak mencukupi target.\n",
-                   "Weight tersedia ", fnum(total_weight_available),
+    message("")
+    message(warn_banner)
+    message(paste0("[", filter_text, "] tidak mencukupi target."))
+    message(paste0("Weight tersedia ", fnum(total_weight_available),
                    " / target ", fnum(weight_aggregate),
-                   " / kekurangan ", fnum(weight_aggregate - total_weight_available),
-                   ".\nSemua data terfilter dipilih."))
+                   " / kekurangan ", fnum(weight_aggregate - total_weight_available), "."))
+    message("Semua data terfilter dipilih.")
     x[x$temp_id %in% x_filtered$temp_id, "flag"] <- sample_flag
     x$temp_id <- NULL
     pct <- round(total_weight_available / weight_aggregate * 100, 4)
