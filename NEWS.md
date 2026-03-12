@@ -4,6 +4,7 @@
 - Dukungan multi-flag dalam filter yang sama (pemilihan bertahap berdasarkan prioritas).
 - `weight_aggregate` dan `iter` menerima vektor (atau satu nilai yang direplikasi) untuk tiap tahap.
 - Pembaruan dokumentasi dan contoh penggunaan.
+- Penambahan alias fungsi baru: `buatfilter()`, `penanda()`, `imputasi()` (nama lama tetap tersedia).
 
 ## 0.2.3
 - Perbaikan kompatibilitas R 4.5: menggunakan `cli::col_red()` untuk warna merah, menghindari mixed escape types dalam string literal.

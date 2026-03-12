@@ -1,7 +1,7 @@
 #' @title Memilih sampel imputasi
 #' @description Memilih sampel imputasi dari filter yang telah dibuat dengan total weight tertentu
 #' @param x Dataset yang digunakan.
-#' @param filters Filter yang telah dibuat dengan fungsi \code{\link{create_filter}}.
+#' @param filters Filter yang telah dibuat dengan fungsi \code{\link{buatfilter}}.
 #' @param weight_aggregate Besaran agregat weight dari sampel terpilih yang diinginkan.
 #' Dapat berupa vektor dengan panjang sama dengan \code{sample_flag}; jika panjang 1 maka akan direplikasi.
 #' @param weight_col Kolom yang digunakan sebagai weight dalam pemilihan sampel apabila tersedia.
@@ -10,22 +10,22 @@
 #' @param sample_flag Identitas dari sampel yang dihasilkan. Untuk kondisi default sample_flag bernilai (integer) 1.
 #' Jika berupa vektor, pemilihan sampel dilakukan bertahap (prioritas), di mana setiap tahap hanya memilih
 #' baris yang belum memiliki flag (flag = 0 atau NA) dalam filter yang sama.
-#' @return Data yang telah diberi flag untuk sampel terpilih yang selanjutnya dapat diubah atributnya menggunakan fungsi \code{\link{mutate_sample}}.
+#' @return Data yang telah diberi flag untuk sampel terpilih yang selanjutnya dapat diubah atributnya menggunakan fungsi \code{\link{imputasi}}.
 #' @examples
 #' # Membuat filter berbeda
-#' filter_1 = create_filter(NAMA_PROV == "ACEH", KLASIFIKASI == 1)
-#' filter_2 = create_filter(NAMA_PROV == "RIAU" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 2)
-#' imputation_sample(x = survei_dummy, filters = filter_1, weight_aggregate = 10000, weight_col = Weight_R)
-#' imputation_sample(x = survei_dummy, filters = filter_2, weight_aggregate = 5000, weight_col = Weight_R)
+#' filter_1 = buatfilter(NAMA_PROV == "ACEH", KLASIFIKASI == 1)
+#' filter_2 = buatfilter(NAMA_PROV == "RIAU" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 2)
+#' penanda(x = survei_dummy, filters = filter_1, weight_aggregate = 10000, weight_col = Weight_R)
+#' penanda(x = survei_dummy, filters = filter_2, weight_aggregate = 5000, weight_col = Weight_R)
 #'
 #' # Membandingkan hasil sampel dengan jumlah iterasi berbeda
-#' my_filter = create_filter(NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 2)
-#' imputation_sample(x = survei_dummy, filters = my_filter, weight_aggregate = 73955, weight_col = Weight_R, iter = 1)
-#' imputation_sample(x = survei_dummy, filters = my_filter, weight_aggregate = 73955, weight_col = Weight_R, iter = 100)
+#' my_filter = buatfilter(NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 2)
+#' penanda(x = survei_dummy, filters = my_filter, weight_aggregate = 73955, weight_col = Weight_R, iter = 1)
+#' penanda(x = survei_dummy, filters = my_filter, weight_aggregate = 73955, weight_col = Weight_R, iter = 100)
 #'
 #' # Multi-flag dalam filter yang sama (prioritas)
-#' my_filter = create_filter(NAMA_PROV == "ACEH", KLASIFIKASI == 1)
-#' imputation_sample(
+#' my_filter = buatfilter(NAMA_PROV == "ACEH", KLASIFIKASI == 1)
+#' penanda(
 #'   x = survei_dummy,
 #'   filters = my_filter,
 #'   weight_aggregate = c(30000, 15000),
@@ -33,8 +33,18 @@
 #'   iter = 10,
 #'   sample_flag = c("prioritas_1", "prioritas_2")
 #' )
+#'
+#' # Contoh alias singkat (d, f, wsum, wvar, i, flag)
+#' d <- survei_dummy
+#' f <- buatfilter(NAMA_PROV == "ACEH", KLASIFIKASI == 1)
+#' wsum <- c(30000, 15000)
+#' wvar <- Weight_R
+#' i <- 10
+#' flag <- c("prioritas_1", "prioritas_2")
+#' d <- penanda(x = d, filters = f, weight_aggregate = wsum,
+#'              weight_col = wvar, iter = i, sample_flag = flag)
 #' @export
-imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1) {
+penanda <- function(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1) {
   weight_col <- dplyr::enquo(weight_col)
   fnum <- function(x) {
     s <- as.character(as.integer(x))
@@ -201,4 +211,10 @@ imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1
 
   x$temp_id <- NULL
   return(x)
+}
+
+#' @rdname penanda
+#' @export
+imputation_sample <- function(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1) {
+  penanda(x, filters, weight_aggregate, weight_col, iter, sample_flag)
 }

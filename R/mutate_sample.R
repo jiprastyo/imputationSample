@@ -5,9 +5,9 @@
 #' @param ... Daftar mapping atribut dan nilai baru yang diinginkan (dapat dibuat sebanyak mungkin).
 #' @return Data yang telah diubah nilai atribut-atributnya.
 #' @examples
-#' survei_dummy = mutate_sample(x = survei_dummy, sample_flag = "aceh_desa", status6 = NA, kategori = 1)
+#' survei_dummy = imputasi(x = survei_dummy, sample_flag = "aceh_desa", status6 = NA, kategori = 1)
 #' @export
-mutate_sample <- function(x, sample_flag, ...) {
+imputasi <- function(x, sample_flag, ...) {
   all_flags <- unique(x$flag)
   if (!sample_flag %in% all_flags) {
     stop(paste("Sampel terpilih dengan flag:", sample_flag, "tidak ditemukan"))
@@ -36,4 +36,10 @@ mutate_sample <- function(x, sample_flag, ...) {
   }
 
   return(x)
+}
+
+#' @rdname imputasi
+#' @export
+mutate_sample <- function(x, sample_flag, ...) {
+  imputasi(x, sample_flag, ...)
 }
