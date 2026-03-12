@@ -65,6 +65,23 @@ survei_dummy <- mutate_sample(
 #> Nilai atribut jenisKegiatan dari sampel terpilih dengan flag: aceh_sumbar_1 telah diubah menjadi: 2
 ```
 
+### Multi-flag dalam Filter yang Sama (Prioritas)
+
+Skenario: kita ingin dua tahap pemilihan dari filter yang sama. Tahap pertama adalah prioritas utama,
+tahap kedua mengambil sisa data yang belum terpilih (flag = 0 atau NA) dan memberi flag berbeda.
+Jika `weight_aggregate` atau `iter` hanya satu nilai, nilai tersebut akan digunakan untuk semua tahap.
+
+```r
+survei_dummy <- imputation_sample(
+  x = survei_dummy,
+  filters = my_filter,
+  weight_aggregate = c(30000, 15000),
+  weight_col = Weight_R,
+  iter = 10,
+  sample_flag = c("prioritas_1", "prioritas_2")
+)
+```
+
 ### Penanganan Weight Tidak Mencukupi
 
 Apabila total weight yang tersedia dalam data terfilter tidak mencukupi target `weight_aggregate`, fungsi akan otomatis memilih seluruh data terfilter dan memberikan peringatan:
@@ -88,6 +105,11 @@ survei_dummy <- imputation_sample(
 ```
 
 ## Changelog
+
+### v0.2.4
+- Dukungan multi-flag dalam filter yang sama (pemilihan bertahap berdasarkan prioritas)
+- `weight_aggregate` dan `iter` menerima vektor (atau satu nilai yang direplikasi) untuk tiap tahap
+- Pembaruan dokumentasi dan contoh penggunaan
 
 ### v0.2.3
 - Perbaikan kompatibilitas R 4.5: menggunakan `cli::col_red()` untuk warna merah, menghindari mixed escape types dalam string literal

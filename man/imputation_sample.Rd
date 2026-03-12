@@ -12,13 +12,17 @@ imputation_sample(x, filters, weight_aggregate, weight_col, iter = 1,
 
 \item{filters}{Filter yang telah dibuat dengan fungsi \code{\link{create_filter}}.}
 
-\item{weight_aggregate}{Besaran agregat weight dari sampel terpilih yang diinginkan.}
+\item{weight_aggregate}{Besaran agregat weight dari sampel terpilih yang diinginkan.
+Dapat berupa vektor dengan panjang sama dengan \code{sample_flag}; jika panjang 1 maka akan direplikasi.}
 
 \item{weight_col}{Kolom yang digunakan sebagai weight dalam pemilihan sampel apabila tersedia.}
 
-\item{iter}{Jumlah iterasi pengacakan dan pengambilan sampel yang diinginkan (semakin tinggi maka weight akan semakin sesuai).}
+\item{iter}{Jumlah iterasi pengacakan dan pengambilan sampel yang diinginkan (semakin tinggi maka weight akan semakin sesuai).
+Dapat berupa vektor dengan panjang sama dengan \code{sample_flag}; jika panjang 1 maka akan direplikasi.}
 
-\item{sample_flag}{Identitas dari sampel yang dihasilkan. Default bernilai 1.}
+\item{sample_flag}{Identitas dari sampel yang dihasilkan. Default bernilai 1.
+Jika berupa vektor, pemilihan sampel dilakukan bertahap (prioritas), di mana setiap tahap hanya memilih
+baris yang belum memiliki flag (flag = 0 atau NA) dalam filter yang sama.}
 }
 \value{
 Data yang telah diberi flag untuk sampel terpilih yang selanjutnya dapat diubah atributnya menggunakan fungsi \code{\link{mutate_sample}}.
@@ -40,4 +44,15 @@ imputation_sample(x = survei_dummy, filters = filter_2, weight_aggregate = 5000,
 my_filter = create_filter(NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 2)
 imputation_sample(x = survei_dummy, filters = my_filter, weight_aggregate = 73955, weight_col = Weight_R, iter = 1)
 imputation_sample(x = survei_dummy, filters = my_filter, weight_aggregate = 73955, weight_col = Weight_R, iter = 100)
+
+# Multi-flag dalam filter yang sama (prioritas)
+my_filter = create_filter(NAMA_PROV == "ACEH", KLASIFIKASI == 1)
+imputation_sample(
+  x = survei_dummy,
+  filters = my_filter,
+  weight_aggregate = c(30000, 15000),
+  weight_col = Weight_R,
+  iter = 10,
+  sample_flag = c("prioritas_1", "prioritas_2")
+)
 }
