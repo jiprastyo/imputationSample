@@ -1,6 +1,6 @@
 Package: imputationSample
 Title: Package untuk Memilih Sampel Imputasi
-Version: 0.2.0.0000
+Version: 0.2.1.0000
 Authors@R: c(
     person("im-perativa", email = "im.imperativa@gmail.com", role = c("aut", "cre")),
     person("jiprastyo", role = "ctb", comment = "Edge-case handling, code optimization, documentation updates"))

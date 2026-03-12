@@ -89,6 +89,13 @@ survei_dummy <- imputation_sample(
 
 ## Changelog
 
+### v0.2.1
+- Perbaikan format angka: mengganti `formatC` dengan regex-based separator untuk menghilangkan warning `prettyNum`
+- Pesan warning menggunakan `message()` (bukan `warning()`) untuk output yang lebih bersih tanpa prefix function call
+- Format pesan `⚠ WARNING!` berwarna merah pada baris tersendiri
+- Newline setelah kalimat pada pesan warning untuk keterbacaan
+- Pesan flag dipersingkat menjadi `Baris terpilih ditandai flag=X.`
+
 ### v0.2.0
 - Penanganan kasus filter kosong (tidak lagi error, mengembalikan data tanpa perubahan)
 - Penanganan kasus target weight lebih kecil dari weight terkecil (warning, bukan error)
