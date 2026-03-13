@@ -16,7 +16,7 @@ install.packages("devtools")
 devtools::install_github("jiprastyo/imputationSample")
 ```
 
-## Penggunaan
+## Penggunaan dan Fungsi Utama
 Terdapat tiga fungsi utama dalam package ini:
 1. `buatfilter()` atau `create_filter()` digunakan untuk membuat filter yang diinginkan
 2. `penanda()` atau `imputation_sample()` digunakan untuk memilih sampel imputasi dari filter yang telah dibuat dengan total weight tertentu
@@ -26,8 +26,6 @@ Versi paket yang terinstal dapat dicek dengan:
 ```r
 packageVersion("imputationSample")
 ```
-
-## Fungsi Utama
 
 **1. buatfilter() atau create_filter()**  
 Membuat filter untuk digunakan pada `penanda()`/`imputation_sample()` (baru: `buatfilter`, lama: `create_filter`).
