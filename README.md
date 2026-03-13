@@ -1,12 +1,14 @@
 # imputationSample
 
 ## Deskripsi
-`imputationSample` merupakan package dalam bahasa pemrograman **R** yang dapat digunakan untuk memilih sampel imputasi dengan weight yang telah ditentukan.
+imputationSample 
+merupakan paket program R untuk memilih baris-baris dalam suatu mikrodata, 
+berdasarkan target jumlah data tertimbang yang telah ditentukan sebelumnya, berdasar kriteria/filter tertentu.
 
-Package ini mendukung penanganan kasus-kasus khusus seperti:
-- Filter yang tidak menghasilkan data
-- Target weight yang terlalu kecil
-- Total weight tersedia yang tidak mencukupi target (seluruh data terfilter akan dipilih otomatis)
+Paket ini mendukung berbagai kasus khusus, seperti:
+- Kriteria penentuan/filter tidak menemukan baris data yang sesuai,
+- Jumlah agregat data tertimbang di mikrodata lebih kecil dari target,
+- Multi target jumlah agregat data tertimbang dalam satu kriteria yang sama.
 
 ## Instalasi
 ```
@@ -28,12 +30,12 @@ packageVersion("imputationSample")
 ## Fungsi Utama
 
 **1. buatfilter() atau create_filter()**  
-Membuat filter untuk digunakan pada `penanda()`/`imputation_sample()`.
+Membuat filter untuk digunakan pada `penanda()`/`imputation_sample()` (baru: `buatfilter`, lama: `create_filter`).
 Argumen yang dapat digunakan:
 - `...` satu atau lebih kondisi logika yang akan di-AND-kan
 
 **2. penanda() atau imputation_sample()**  
-Memilih sampel imputasi dan memberi flag. Argumen yang dapat digunakan:
+Memilih sampel imputasi dan memberi flag (baru: `penanda`, lama: `imputation_sample`). Argumen yang dapat digunakan:
 - `d` atau `x` data
 - `f` atau `filters` filter
 - `wsum` atau `weight_aggregate` target weight
@@ -42,7 +44,7 @@ Memilih sampel imputasi dan memberi flag. Argumen yang dapat digunakan:
 - `flag` atau `sample_flag` target baris data
 
 **3. imputasi() atau mutate_sample()**  
-Mengubah atribut pada baris dengan flag tertentu. Argumen yang dapat digunakan:
+Mengubah atribut pada baris dengan flag tertentu (baru: `imputasi`, lama: `mutate_sample`). Argumen yang dapat digunakan:
 - `d` atau `x` data
 - `flag` atau `sample_flag` target baris data
 - `...` pasangan `kolom = nilai_baru` (bisa lebih dari satu)
@@ -62,14 +64,14 @@ survei_dummy
 #> 3     27 20182      508 1     11        ACEH             1 SIMEULUE 2           ...
 #> # ... with 3,724 more rows, and 216 more variables
 
-# Buat filter untuk memilih sampel acak dari provinsi ACEH atau SUMATERA BARAT
-# dengan klasifikasi Perkotaan
+# Buat filter (baru: buatfilter, lama: create_filter) untuk memilih sampel acak
+# dari provinsi ACEH atau SUMATERA BARAT dengan klasifikasi Perkotaan
 my_filter <- buatfilter( # atau create_filter()
   NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT",
   KLASIFIKASI == 1
 )
 
-# Memilih sampel acak dari filter yang telah dibuat
+# Memilih sampel (baru: penanda, lama: imputation_sample) dari filter yang telah dibuat
 survei_dummy <- penanda(
   d = survei_dummy,
   f = my_filter,
@@ -81,7 +83,7 @@ survei_dummy <- penanda(
 #> Total data 3.727 / terfilter 485 / terpilih imputasi 42 dengan 10 iterasi, total weight: 44.987 (99.9711%)
 #> Baris terpilih ditandai flag=aceh_sumbar_1.
 
-# Mengubah atribut sampel terpilih
+# Mengubah atribut (baru: imputasi, lama: mutate_sample) pada sampel terpilih
 survei_dummy <- imputasi(
   d = survei_dummy,
   flag = "aceh_sumbar_1",
@@ -96,10 +98,10 @@ survei_dummy <- imputasi(
 
 Skenario: kita ingin dua tahap pemilihan dari filter yang sama. Tahap pertama adalah prioritas utama,
 tahap kedua mengambil sisa data yang belum terpilih (flag = 0 atau NA) dan memberi flag berbeda.
-Jika `weight_aggregate` atau `iter` hanya satu nilai, nilai tersebut akan digunakan untuk semua tahap.
+Jika `wsum`/`weight_aggregate` atau `i`/`iter` hanya satu nilai, nilai tersebut akan digunakan untuk semua tahap.
 
 ```r
-survei_dummy <- penanda( # atau imputation_sample()
+survei_dummy <- penanda( # baru: penanda, lama: imputation_sample
   d = survei_dummy,
   f = my_filter,
   wsum = c(30000, 15000),
@@ -111,10 +113,10 @@ survei_dummy <- penanda( # atau imputation_sample()
 
 ### Penanganan Weight Tidak Mencukupi
 
-Apabila total weight yang tersedia dalam data terfilter tidak mencukupi target `weight_aggregate`, fungsi akan otomatis memilih seluruh data terfilter dan memberikan peringatan:
+Apabila total weight yang tersedia dalam data terfilter tidak mencukupi target `wsum`/`weight_aggregate`, fungsi akan otomatis memilih seluruh data terfilter dan memberikan peringatan:
 
 ```r
-survei_dummy <- penanda( # atau imputation_sample()
+survei_dummy <- penanda( # baru: penanda, lama: imputation_sample
   d = survei_dummy,
   f = my_filter,
   wsum = 999999,
@@ -122,7 +124,7 @@ survei_dummy <- penanda( # atau imputation_sample()
   i = 10,
   flag = "all_selected"
 )
-#> ⚠ WARNING!
+#> âš  WARNING!
 #> [NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 1] tidak mencukupi target.
 #> Weight tersedia 485.230 / target 999.999 / kekurangan 514.769.
 #> Semua data terfilter dipilih.
@@ -158,7 +160,7 @@ survei_dummy <- penanda( # atau imputation_sample()
 ### v0.2.1
 - Perbaikan format angka: mengganti `formatC` dengan regex-based separator untuk menghilangkan warning `prettyNum`
 - Pesan warning menggunakan `message()` (bukan `warning()`) untuk output yang lebih bersih tanpa prefix function call
-- Format pesan `⚠ WARNING!` berwarna merah pada baris tersendiri
+- Format pesan `âš  WARNING!` berwarna merah pada baris tersendiri
 - Newline setelah kalimat pada pesan warning untuk keterbacaan
 - Pesan flag dipersingkat menjadi `Baris terpilih ditandai flag=X.`
 
@@ -174,13 +176,10 @@ survei_dummy <- penanda( # atau imputation_sample()
 ### v0.1.1
 - Rilis awal
 
-## Credits
-- [@im-perativa](https://github.com/im-perativa) — penulis dan pengelola asli
-- [@jiprastyo](https://github.com/jiprastyo) — penanganan edge-case, optimasi kode, pembaruan dokumentasi (v0.2.0)
-
-## Attribution
-- Fork 1: github.com/easbi (repo turunan pertama dari im-perativa)
-- Fork 2: github.com/jiprastyo (repo turunan kedua / pengembangan saat ini)
+## Credits dan Attribution
+- [@im-perativa](https://github.com/im-perativa) - penulis dan pengelola asli
+- [@easbi](https://github.com/easbi) - fork pertama
+- [@jiprastyo](https://github.com/jiprastyo) - fork kedua / pengembangan saat ini
 
 ## Bantuan
 Apabila ditemukan bug atau masalah lainnya, silakan buat issue di [GitHub](https://github.com/easbi/imputationSample/issues)
