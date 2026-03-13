@@ -5,13 +5,13 @@
 \alias{mutate_sample}
 \title{Mengubah nilai atribut-atribut sampel}
 \usage{
-imputasi(x, sample_flag, ...)
+imputasi(d, flag, ...)
 mutate_sample(x, sample_flag, ...)
 }
 \arguments{
-\item{x}{Dataset yang digunakan.}
+\item{d}{Dataset yang digunakan.}
 
-\item{sample_flag}{Flag dari sampel imputasi yang ingin diubah atribut-atributnya.}
+\item{flag}{Target baris data yang ingin diubah atribut-atributnya.}
 
 \item{...}{Daftar mapping atribut dan nilai baru yang diinginkan (dapat dibuat sebanyak mungkin).}
 }
@@ -22,5 +22,5 @@ Data yang telah diubah nilai atribut-atributnya.
 Mengubah nilai atribut-atribut sampel dengan flag tertentu
 }
 \examples{
-survei_dummy = imputasi(x = survei_dummy, sample_flag = "aceh_desa", status6 = NA, kategori = 1)
+survei_dummy = imputasi(d = survei_dummy, flag = "aceh_desa", status6 = NA, kategori = 1)
 }

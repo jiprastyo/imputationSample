@@ -7,7 +7,7 @@
 #' @param wvar Kolom yang digunakan sebagai weight dalam pemilihan sampel apabila tersedia.
 #' @param i Jumlah iterasi pengacakan dan pengambilan sampel yang diinginkan (semakin tinggi maka weight akan semakin sesuai).
 #' Dapat berupa vektor dengan panjang sama dengan \code{flag}; jika panjang 1 maka akan direplikasi.
-#' @param flag Identitas dari sampel yang dihasilkan. Untuk kondisi default flag bernilai (integer) 1.
+#' @param flag Target baris data yang dihasilkan. Untuk kondisi default flag bernilai (integer) 1.
 #' Jika berupa vektor, pemilihan sampel dilakukan bertahap (prioritas), di mana setiap tahap hanya memilih
 #' baris yang belum memiliki flag (flag = 0 atau NA) dalam filter yang sama.
 #' Nama argumen lama `x`, `filters`, `weight_aggregate`, `weight_col`, `iter`, `sample_flag` tetap diterima.

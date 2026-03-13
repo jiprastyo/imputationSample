@@ -16,9 +16,9 @@ devtools::install_github("jiprastyo/imputationSample")
 
 ## Penggunaan
 Terdapat tiga fungsi utama dalam package ini:
-- `buatfilter()` atau `create_filter()` digunakan untuk membuat filter yang diinginkan
-- `penanda()` atau `imputation_sample()` digunakan untuk memilih sampel imputasi dari filter yang telah dibuat dengan total weight tertentu
-- `imputasi()` atau `mutate_sample()` digunakan untuk mengubah nilai atribut-atribut tertentu dari sampel yang telah dipilih yang teridentifikasi dengan flag tertentu
+1. `buatfilter()` atau `create_filter()` digunakan untuk membuat filter yang diinginkan
+2. `penanda()` atau `imputation_sample()` digunakan untuk memilih sampel imputasi dari filter yang telah dibuat dengan total weight tertentu
+3. `imputasi()` atau `mutate_sample()` digunakan untuk mengubah nilai atribut-atribut tertentu dari sampel yang telah dipilih yang teridentifikasi dengan flag tertentu
 
 Versi paket yang terinstal dapat dicek dengan:
 ```r
@@ -27,24 +27,24 @@ packageVersion("imputationSample")
 
 ## Fungsi Utama
 
-**buatfilter() atau create_filter()**  
+**1. buatfilter() atau create_filter()**  
 Membuat filter untuk digunakan pada `penanda()`/`imputation_sample()`.
 Argumen yang dapat digunakan:
 - `...` satu atau lebih kondisi logika yang akan di-AND-kan
 
-**penanda() atau imputation_sample()**  
+**2. penanda() atau imputation_sample()**  
 Memilih sampel imputasi dan memberi flag. Argumen yang dapat digunakan:
-- `d` data (alias: `x`)
-- `f` filter (alias: `filters`)
-- `wsum` target weight (alias: `weight_aggregate`)
-- `wvar` kolom weight (alias: `weight_col`)
-- `i` iterasi (alias: `iter`)
-- `flag` identitas sampel (alias: `sample_flag`)
+- `d` atau `x` data
+- `f` atau `filters` filter
+- `wsum` atau `weight_aggregate` target weight
+- `wvar` atau `weight_col` kolom weight
+- `i` atau `iter` iterasi
+- `flag` atau `sample_flag` target baris data
 
-**imputasi() atau mutate_sample()**  
+**3. imputasi() atau mutate_sample()**  
 Mengubah atribut pada baris dengan flag tertentu. Argumen yang dapat digunakan:
-- `x` data
-- `sample_flag` flag target
+- `d` atau `x` data
+- `flag` atau `sample_flag` target baris data
 - `...` pasangan `kolom = nilai_baru` (bisa lebih dari satu)
 
 ## Implementasi
@@ -83,44 +83,13 @@ survei_dummy <- penanda(
 
 # Mengubah atribut sampel terpilih
 survei_dummy <- imputasi(
-  x = survei_dummy,
-  sample_flag = "aceh_sumbar_1",
+  d = survei_dummy,
+  flag = "aceh_sumbar_1",
   kategori = 1,
   jenisKegiatan = 2
 )
 #> Nilai atribut kategori dari sampel terpilih dengan flag: aceh_sumbar_1 telah diubah menjadi: 1
 #> Nilai atribut jenisKegiatan dari sampel terpilih dengan flag: aceh_sumbar_1 telah diubah menjadi: 2
-```
-
-### Tips Pemendekan Argumen
-
-Penamaan variabel bebas, tapi pastikan tidak memakai nama yang sama untuk objek berbeda.
-Berikut alias final yang disepakati:
-- `d` untuk data
-- `f` untuk filters
-- `wsum` untuk weight_aggregate
-- `wvar` untuk weight_col
-- `i` untuk iter
-- `flag` untuk sample_flag
-
-Contoh pemakaian (menggunakan `penanda()`, dapat diganti `imputation_sample()`):
-
-```r
-d <- survei_dummy
-f <- buatfilter(level_1_co == 12, level_2_co == 11, k10 >= 15)
-wsum <- c(5000, 6000)
-wvar <- w_finalR5
-i <- 10
-flag <- c("status4_1", "status4_2")
-
-d <- penanda(
-  d = d,
-  f = f,
-  wsum = wsum,
-  wvar = wvar,
-  i = i,
-  flag = flag
-)
 ```
 
 ### Multi-flag dalam Filter yang Sama (Prioritas)
@@ -167,6 +136,7 @@ survei_dummy <- penanda( # atau imputation_sample()
 ### v0.2.6
 - Pembaruan struktur README dan penjelasan fungsi
 - Penambahan informasi attribution fork
+- Perubahan argumen formal `imputasi()` ke `d` dan `flag` (argumen lama tetap didukung)
 
 ### v0.2.5
 - Dukungan multi-flag dalam filter yang sama (pemilihan bertahap berdasarkan prioritas)

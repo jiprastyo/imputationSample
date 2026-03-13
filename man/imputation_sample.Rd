@@ -22,7 +22,7 @@ Dapat berupa vektor dengan panjang sama dengan \code{flag}; jika panjang 1 maka 
 \item{i}{Jumlah iterasi pengacakan dan pengambilan sampel yang diinginkan (semakin tinggi maka weight akan semakin sesuai).
 Dapat berupa vektor dengan panjang sama dengan \code{flag}; jika panjang 1 maka akan direplikasi.}
 
-\item{flag}{Identitas dari sampel yang dihasilkan. Default bernilai 1.
+\item{flag}{Target baris data yang dihasilkan. Default bernilai 1.
 Jika berupa vektor, pemilihan sampel dilakukan bertahap (prioritas), di mana setiap tahap hanya memilih
 baris yang belum memiliki flag (flag = 0 atau NA) dalam filter yang sama.}
 

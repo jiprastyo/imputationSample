@@ -3,6 +3,7 @@
 ## 0.2.6
 - Pembaruan struktur README dan penjelasan fungsi.
 - Penambahan informasi attribution fork.
+- Perubahan argumen formal `imputasi()` ke `d` dan `flag` (argumen lama tetap didukung).
 
 ## 0.2.5
 - Dukungan multi-flag dalam filter yang sama (pemilihan bertahap berdasarkan prioritas).
