@@ -21,18 +21,44 @@ Terdapat tiga fungsi utama dalam package ini:
 - `imputasi()` digunakan untuk mengubah nilai atribut-atribut tertentu dari sampel yang telah dipilih yang teridentifikasi dengan flag tertentu
 
 Catatan kompatibilitas: nama lama `create_filter()`, `imputation_sample()`, dan `mutate_sample()` tetap tersedia sebagai alias.
+Nama argumen lama untuk `penanda()` juga tetap diterima.
 
 ## Fungsi
 Fungsi yang tersedia di repo ini:
 - `buatfilter(...)` membuat filter untuk digunakan pada `penanda()`.
   Argumen `...` diisi dengan kondisi logika (satu atau lebih) yang akan di-AND-kan.
-- `penanda(x, filters, weight_aggregate, weight_col, iter = 1, sample_flag = 1)` memilih sampel dan memberi flag.
+- `penanda(d, f, wsum, wvar, i = 1, flag = 1, ...)` memilih sampel dan memberi flag.
 - `imputasi(x, sample_flag, ...)` mengubah atribut pada baris dengan flag tertentu.
   Argumen `...` diisi pasangan `kolom = nilai_baru` (bisa lebih dari satu).
 
 Fungsi internal (di dalam `penanda()`):
 - `fnum(x)` format angka untuk pesan output.
-- `run_once(x, weight_aggregate, iter, sample_flag, exclude_flag)` satu tahap pemilihan sampel.
+- `run_once(d, wsum, i, flag, exclude_flag)` satu tahap pemilihan sampel.
+
+## Contoh Argumen Formal
+
+```r
+# buatfilter()
+f <- buatfilter(level_1_co == 12, level_2_co == 11, k10 >= 15)
+
+# penanda()
+d <- penanda(
+  d = survei_dummy,
+  f = f,
+  wsum = 5000,
+  wvar = Weight_R,
+  i = 10,
+  flag = "status4_1"
+)
+
+# imputasi()
+d <- imputasi(
+  x = d,
+  sample_flag = "status4_1",
+  kategori = 1,
+  jenisKegiatan = 2
+)
+```
 
 ## Implementasi
 
@@ -58,12 +84,12 @@ my_filter <- buatfilter(
 
 # Memilih sampel acak dari filter yang telah dibuat
 survei_dummy <- penanda(
-  x = survei_dummy,
-  filters = my_filter,
-  weight_aggregate = 45000,
-  weight_col = Weight_R,
-  iter = 10,
-  sample_flag = "aceh_sumbar_1"
+  d = survei_dummy,
+  f = my_filter,
+  wsum = 45000,
+  wvar = Weight_R,
+  i = 10,
+  flag = "aceh_sumbar_1"
 )
 #> Total data 3.727 / terfilter 485 / terpilih imputasi 42 dengan 10 iterasi, total weight: 44.987 (99.9711%)
 #> Baris terpilih ditandai flag=aceh_sumbar_1.
@@ -101,12 +127,12 @@ i <- 10
 flag <- c("status4_1", "status4_2")
 
 d <- penanda(
-  x = d,
-  filters = f,
-  weight_aggregate = wsum,
-  weight_col = wvar,
-  iter = i,
-  sample_flag = flag
+  d = d,
+  f = f,
+  wsum = wsum,
+  wvar = wvar,
+  i = i,
+  flag = flag
 )
 ```
 
@@ -118,12 +144,12 @@ Jika `weight_aggregate` atau `iter` hanya satu nilai, nilai tersebut akan diguna
 
 ```r
 survei_dummy <- penanda(
-  x = survei_dummy,
-  filters = my_filter,
-  weight_aggregate = c(30000, 15000),
-  weight_col = Weight_R,
-  iter = 10,
-  sample_flag = c("prioritas_1", "prioritas_2")
+  d = survei_dummy,
+  f = my_filter,
+  wsum = c(30000, 15000),
+  wvar = Weight_R,
+  i = 10,
+  flag = c("prioritas_1", "prioritas_2")
 )
 ```
 
@@ -133,12 +159,12 @@ Apabila total weight yang tersedia dalam data terfilter tidak mencukupi target `
 
 ```r
 survei_dummy <- penanda(
-  x = survei_dummy,
-  filters = my_filter,
-  weight_aggregate = 999999,
-  weight_col = Weight_R,
-  iter = 10,
-  sample_flag = "all_selected"
+  d = survei_dummy,
+  f = my_filter,
+  wsum = 999999,
+  wvar = Weight_R,
+  i = 10,
+  flag = "all_selected"
 )
 #> ⚠ WARNING!
 #> [NAMA_PROV == "ACEH" | NAMA_PROV == "SUMATERA BARAT", KLASIFIKASI == 1] tidak mencukupi target.
@@ -156,6 +182,7 @@ survei_dummy <- penanda(
 - `weight_aggregate` dan `iter` menerima vektor (atau satu nilai yang direplikasi) untuk tiap tahap
 - Pembaruan dokumentasi dan contoh penggunaan
 - Penambahan alias fungsi baru: `buatfilter()`, `penanda()`, `imputasi()` (nama lama tetap tersedia)
+- Perubahan nama argumen formal `penanda()` ke `d`, `f`, `wsum`, `wvar`, `i`, `flag` (argumen lama tetap didukung)
 
 ### v0.2.4
 - Penyesuaian minor dokumentasi

@@ -5,6 +5,7 @@
 - `weight_aggregate` dan `iter` menerima vektor (atau satu nilai yang direplikasi) untuk tiap tahap.
 - Pembaruan dokumentasi dan contoh penggunaan.
 - Penambahan alias fungsi baru: `buatfilter()`, `penanda()`, `imputasi()` (nama lama tetap tersedia).
+- Perubahan nama argumen formal `penanda()` ke `d`, `f`, `wsum`, `wvar`, `i`, `flag` (argumen lama tetap didukung).
 
 ## 0.2.4
 - Penyesuaian minor dokumentasi.
